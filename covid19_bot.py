@@ -7,8 +7,8 @@ import time
 
 
 def create_tweet():
-	locale.setlocale(locale.LC_ALL,'en_IN.utf8')
-	response = requests.get('https://api.covid19india.org/data.json')
+	locale.setlocale(locale.LC_ALL,'en_IN.utf8')  #For getting comma's in huge numbers in Indian format
+	response = requests.get('https://api.covid19india.org/data.json')#Getting the data from api
 	data = response.json()
 	
 	actual_data=data["statewise"][0] 
@@ -21,7 +21,7 @@ def create_tweet():
 	totrecovered = int(actual_data["recovered"])
 	totdeaths = int(actual_data["deaths"])
 	
-	tweet = f"""	Covid19 Updates(INDIA)
+	tweet = f"""	Covid19 Updates(INDIA)          
 	
 Last updated on : {time}
 
@@ -49,7 +49,7 @@ def tweeting():
 	ACCESS_SECRET = ''
 
 
-	auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+	auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)#Authenticating the keys
 	auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
 	api = tweepy.API(auth)
 	
@@ -65,13 +65,13 @@ def tweeting():
 		print("Tweet Successful")
 	except tweepy.TweepError as error:
 		if error.api_code == 187:
-			print("Duplicate message")
+			print("Duplicate message")  	#Duplicate tweets wil not be tweeted
 		else:
 			raise error			
      	
 while True:
 	tweeting() 	
-	time.sleep(10800)
+	time.sleep(16800)   # Giving delay of around 4.5hrs
 	       
 
 
