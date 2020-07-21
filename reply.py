@@ -26,7 +26,10 @@ class StdOutListener(StreamListener): #Predifined class from module tweepy to st
 				tweet = createTweetState(place)
 				replyToTweet(tweet,tweet_id)
 				print("Successfully Tweeted")	
-
+			elif(place == "Nothing" and sym == "@"):
+				print("Not tweeting")
+			elif(place == "Wrong" and sym == "@"):
+				print("Not Tweeting")	
 
 		
 		
@@ -52,16 +55,30 @@ def replyToTweet(tweet,tweet_id):   #This function Tweets the tweet
 def decodeTweet(text):          #finding if its state or district data to be found
 	if("#" in text):                # Districts -"#"
 		district = text.split("#",1)[1]
+		district = district.title()
+		try:
+			state = dist_dict[district]
+		except KeyError:
+			print("Wrong District")
+			return "Wrong","@"
 		sym = "#"
 		return district,sym
 	if("$" in text):                # State and UT - "$"
 		state = text.split("$",1)[1]
+		state = state.title()
+		try:
+			state_no = state_dict[state]
+		except KeyError:
+			print("Wrong State")
+			return "Wrong","@"
 		sym = "$"
 		return state,sym		
-	return "Nothing"
+	return "Nothing","@"
 
 def createTweetDistrict(district):      #getting particular district data
 	state = dist_dict[district]
+	response = requests.get('https://api.covid19india.org/state_district_wise.json')
+	cdata = response.json()
 	dltconf = int(cdata[state]['districtData'][district]['delta']['confirmed'])
 	dltrecv = int(cdata[state]['districtData'][district]['delta']['recovered'])
 	dltdecs = int(cdata[state]['districtData'][district]['delta']['deceased'])
@@ -75,6 +92,8 @@ def createTweetDistrict(district):      #getting particular district data
 
 def createTweetState(state):        #Getting particular state data
 	state_no = state_dict[state]
+	response1 = requests.get('https://api.covid19india.org/data.json')
+	scdata = response1.json()
 	dltconf = int(scdata["statewise"][state_no]["deltaconfirmed"])
 	dltrecv = int(scdata["statewise"][state_no]["deltarecovered"])
 	dltdecs = int(scdata["statewise"][state_no]["deltadeaths"])
