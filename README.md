@@ -4,7 +4,7 @@
 
 1. covid_bot.py - Gives updates on Twitter(Every 5hr approx.).
 
-2. reply.py - Gives replies to the user.
+2. reply.py - Replies to the user.
 
 # Dependencies
 pip install tweepy 
